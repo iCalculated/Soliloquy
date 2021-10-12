@@ -1,0 +1,8 @@
+{
+    "name": "Sock Chat",
+    "version": "0.0.1",
+    "description": "Hello Socket!",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}
