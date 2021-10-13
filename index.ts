@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
         delete online[socket.id]
     });
     socket.on('chat message', ({ msg, user }) => {
-        io.emit('chat message', { msg, user });
+        socket.broadcast.emit('chat message', { msg, user });
         online[socket.id] = user;
         console.log(action('received ') + data(msg) + action(" from ") + data(user));
     });
