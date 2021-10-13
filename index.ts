@@ -4,6 +4,7 @@ const { Server } = require("socket.io")
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const faker = require('faker');
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
@@ -11,7 +12,8 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('user connected')
-    io.emit('join');
+    const name = faker.hacker.adjective() + " " + faker.hacker.noun();
+    io.emit('join', name);
     socket.on('disconnect', () => {
         console.log('user disconnected')
     });

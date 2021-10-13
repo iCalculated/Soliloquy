@@ -41,7 +41,8 @@
         } 
     });
 
-    socket.on('join', function () {
+    socket.on('join', function (name) {
+        user = name;
         var item = document.createElement('li');
         item.innerHTML = "<em>A user (" + user + ") joined the room</em>";
         messages.appendChild(item);
