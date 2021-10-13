@@ -41,13 +41,15 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     }
+    form.addEventListener('change', function(e) {
+      if (nick.value && nick.value != user) {
+          socket.emit('name change', user, nick.value);
+          user = nick.value;
+      }
+    });
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-            if (nick.value && nick.value != user) {
-                socket.emit('name change', user, nick.value);
-                user = nick.value;
-            }
             addMessage(input.value, user);
             socket.emit('chat message', {user: user, msg: input.value});
             input.value = '';
