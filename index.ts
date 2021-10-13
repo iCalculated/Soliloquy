@@ -1,36 +1,40 @@
 const express = require('express');
 const http = require('http')
 const { Server } = require("socket.io")
+const faker = require('faker');
+const chalk = require('chalk');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const faker = require('faker');
 
+const action = chalk.bold.gray;
+const data = chalk.blue;
+
+const online = {};
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 });
 
-const online = {};
 
 io.on('connection', (socket) => {
     const name = faker.hacker.adjective() + " " + faker.hacker.noun();
-    console.log(name + ' connected')
+    console.log(data(name) + action(' connected'))
     online[socket.id] = name;
-    console.log(online)
     io.emit('join', name);
     socket.on('disconnect', () => {
         const name = online[socket.id];
-        console.log(name + ' disconnected');
+        console.log(data(name) + action(' disconnected'));
         io.emit('leave', name)
         delete online[socket.id]
     });
     socket.on('chat message', ({ msg, user }) => {
         io.emit('chat message', { msg, user });
         online[socket.id] = user;
-        console.log('received `' + msg + "` from `" + user + "`");
+        console.log(action('received ') + data(msg) + action(" from ") + data(user));
     });
 });
 
 server.listen(3000, () => {
-    console.log('listening on port 3000.')
+    console.log(action('listening on port 3000.'))
 });

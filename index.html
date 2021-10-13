@@ -44,14 +44,14 @@
     socket.on('join', function (name) {
         user = name;
         var item = document.createElement('li');
-        item.innerHTML = "<em>A user (" + user + ") joined the room</em>";
+        item.innerHTML = "\t<em><b>" + user + "</b> joined the room</em>";
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
     socket.on('leave', function (name) {
         user = name;
         var item = document.createElement('li');
-        item.innerHTML = "<em>A user (" + user + ") left the room</em>";
+        item.innerHTML = "<em><b>" + user + "</b> left the room</em>";
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
