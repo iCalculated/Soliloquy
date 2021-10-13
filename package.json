@@ -2,6 +2,9 @@
     "name": "Sock Chat",
     "version": "0.0.1",
     "description": "Hello Socket!",
+    "scripts": {
+        "start": "tsc-watch --onSuccess \"node ./dist/index.js\""
+    },
     "dependencies": {
         "chalk": "^4.1.2",
         "express": "^4.17.1",
@@ -12,6 +15,7 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.13",
+        "tsc-watch": "^4.5.0",
         "typescript": "^4.4.4"
     }
 }
