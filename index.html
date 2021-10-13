@@ -48,6 +48,13 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
+    socket.on('leave', function (name) {
+        user = name;
+        var item = document.createElement('li');
+        item.innerHTML = "<em>A user (" + user + ") left the room</em>";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
     socket.on('chat message', function (p) {
         console.log(p);
         const { user, msg } = p;
