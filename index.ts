@@ -11,12 +11,13 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('user connected')
+    io.emit('join');
     socket.on('disconnect', () => {
         console.log('user disconnected')
     });
     socket.on('chat message', ({ msg, user }) => {
         io.emit('chat message', { msg, user });
-        console.log('received: ' + msg + ", from: " + user);
+        console.log('received `' + msg + "` from `" + user + "`");
     });
 });
 

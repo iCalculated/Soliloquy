@@ -41,6 +41,12 @@
         } 
     });
 
+    socket.on('join', function () {
+        var item = document.createElement('li');
+        item.innerHTML = "<em>A user (" + user + ") joined the room</em>";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
     socket.on('chat message', function (p) {
         console.log(p);
         const { user, msg } = p;
