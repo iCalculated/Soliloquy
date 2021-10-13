@@ -22,11 +22,13 @@ io.on('connection', (socket) => {
     console.log(data(name) + action(' connected'))
     online[socket.id] = name;
     io.emit('join', name);
+    io.emit('online', online)
     socket.on('disconnect', () => {
         const name = online[socket.id];
         console.log(data(name) + action(' disconnected'));
         io.emit('leave', name)
         delete online[socket.id]
+        io.emit('online', online)
     });
     socket.on('chat message', ({ msg, user }) => {
         socket.broadcast.emit('chat message', { msg, user });

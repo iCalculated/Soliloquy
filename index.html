@@ -25,15 +25,20 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
     var socket = io();
-    var user = "Anonymous";
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    var user;
 
-    function addMessage(user, msg) {
+    function addMessage(msg, user) {
         var item = document.createElement('li');
         console.log(user, msg)
-        item.innerHTML = "<b>" + user + "</b>: " + msg;
+        if (user) {
+          item.innerHTML = "<b>" + user + "</b>: " + msg;
+        }
+        else {
+          item.innerHTML = msg;
+        }
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     }
@@ -43,7 +48,7 @@
             if (nick.value) {
                 user = nick.value;
             }
-            addMessage(user, input.value);
+            addMessage(input.value, user);
             socket.emit('chat message', {user: user, msg: input.value});
             input.value = '';
         } 
@@ -56,6 +61,22 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
+    socket.on('online', function (online) {
+        users = Object.values(online);
+        repr = "Users online: <em>"
+        console.log(users);
+        for (const u of users) {
+          console.log(user);
+            if (u == user) {
+              console.log("match!");
+              repr += "<b>" + u + "</b>, ";
+              continue;
+            }
+            repr += u + ", ";
+        }
+        repr += "</em>";
+        addMessage(repr);
+    });
     socket.on('leave', function (name) {
         user = name;
         var item = document.createElement('li');
@@ -66,7 +87,7 @@
     socket.on('chat message', function (p) {
         console.log(p);
         const { user, msg } = p;
-        addMessage(user, msg);
+        addMessage(msg, user);
     });
     </script>
   </body>
