@@ -19,7 +19,7 @@
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="nick" autocomplete="off" placeholder="Anonymous" /><button>Set</button>
+      <input id="nick" autocomplete="off" placeholder="Anonymous" />
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
@@ -30,15 +30,12 @@
     var form = document.getElementById('form');
     var input = document.getElementById('input');
 
-    nick_form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (nick.value) {
-            user = nick.value;
-        }
-    });
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
+            if (nick.value) {
+                user = nick.value;
+            }
             socket.emit('chat message', {user: user, msg: input.value});
             input.value = '';
         } 
@@ -49,7 +46,7 @@
         const { user, msg } = p;
         var item = document.createElement('li');
         console.log(user, msg)
-        item.textContent = user + ": " + msg;
+        item.innerHTML = "<b>" + user + "</b>: " + msg;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
