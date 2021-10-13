@@ -73,6 +73,9 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
+    socket.on('name change', function (old_name, new_name) {
+        addMessage("<em>" + old_name + " changed name to " + new_name + ".</em>");
+    });
     socket.on('chat message', function (p) {
         const { user, msg } = p;
         addMessage(msg, user);
