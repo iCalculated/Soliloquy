@@ -16,6 +16,9 @@
     </style>
   </head>
   <body>
+    <form id="nick_form" action="">
+        <input id="nick" autocomplete="off" /><button>Set</button>
+    </form>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
@@ -23,10 +26,17 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
     var socket = io();
+    var username = "Anonymous";
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
 
+    nick_form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (nick.value) {
+            username = nick.value;
+        }
+    });
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
