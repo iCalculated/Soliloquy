@@ -35,6 +35,11 @@ io.on('connection', (socket) => {
         online[socket.id] = user;
         console.log(action('received ') + data(msg) + action(" from ") + data(user));
     });
+    socket.on('name change', (old_name, new_name) => {
+        online[socket.id] = new_name;
+        console.log(data(old_name) + action(' changed nick to') + data(new_name));
+        socket.emit('name change', old_name, new_name);
+    })
 });
 
 server.listen(3000, () => {

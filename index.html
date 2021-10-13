@@ -45,7 +45,7 @@
         e.preventDefault();
         if (input.value) {
             if (nick.value && nick.value != user) {
-                socket.emit('chat message', {msg: '<e>' + user + ' changed their username to ' + nick.value + '</e>.'});
+                socket.emit('name change', user, nick.value);
                 user = nick.value;
             }
             addMessage(input.value, user);
