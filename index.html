@@ -32,7 +32,6 @@
 
     function addMessage(msg, user) {
         var item = document.createElement('li');
-        console.log(user, msg)
         if (user) {
           item.innerHTML = "<b>" + user + "</b>: " + msg;
         }
@@ -45,7 +44,8 @@
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
-            if (nick.value) {
+            if (nick.value && nick.value != user) {
+                socket.emit('chat message', {msg: '<e>' + user + ' changed their username to ' + nick.value + '</e>.'});
                 user = nick.value;
             }
             addMessage(input.value, user);
@@ -63,29 +63,17 @@
     });
     socket.on('online', function (online) {
         users = Object.values(online);
-        repr = "Users online: <em>"
-        console.log(users);
-        for (const u of users) {
-          console.log(user);
-            if (u == user) {
-              console.log("match!");
-              repr += "<b>" + u + "</b>, ";
-              continue;
-            }
-            repr += u + ", ";
-        }
-        repr += "</em>";
+        repr = "Users online: <em>" + users.join(", ") + ".</em>";
         addMessage(repr);
     });
     socket.on('leave', function (name) {
         user = name;
         var item = document.createElement('li');
-        item.innerHTML = "<em><b>" + user + "</b> left the room</em>";
+        item.innerHTML = "<em><b> " + user + "</b> left the room</em>";
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });
     socket.on('chat message', function (p) {
-        console.log(p);
         const { user, msg } = p;
         addMessage(msg, user);
     });
