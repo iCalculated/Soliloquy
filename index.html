@@ -1,29 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Soliloquy</title>
-    <style>
-      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-      #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-      #nick { border: none; padding: 0 1rem; border-radius: 2rem; margin: 0.25rem; }
+<head>
+  <title>Soliloquy</title>
+  <style>
+    body {
+      margin: 0;
+      padding-bottom: 3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages > li { padding: 0.5rem 1rem; }
-      #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="nick" autocomplete="off" placeholder=Username />
-      <input id="input" autocomplete="off" autofocus/><button>Send</button>
-    </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
+    #form {
+      background: rgba(0, 0, 0, 0.15);
+      padding: 0.25rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      height: 3rem;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+
+    #input {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+    }
+
+    #input:focus {
+      outline: none;
+    }
+
+    #form>button {
+      background: #333;
+      border: none;
+      padding: 0 1rem;
+      margin: 0.25rem;
+      border-radius: 3px;
+      outline: none;
+      color: #fff;
+    }
+
+    #nick {
+      border: none;
+      padding: 0 1rem;
+      border-radius: 2rem;
+      margin: 0.25rem;
+    }
+
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #messages>li {
+      padding: 0.5rem 1rem;
+    }
+
+    #messages>li:nth-child(odd) {
+      background: #efefef;
+    }
+  </style>
+</head>
+
+<body>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="nick" autocomplete="off" placeholder=Username />
+    <input id="input" autocomplete="off" autofocus /><button>Send</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
     var socket = io();
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
@@ -31,57 +83,58 @@
     var user;
 
     function addMessage(msg, user) {
-        var item = document.createElement('li');
-        if (user) {
-          item.innerHTML = "<b>" + user + "</b>: " + msg;
-        }
-        else {
-          item.innerHTML = msg;
-        }
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+      var item = document.createElement('li');
+      if (user) {
+        item.innerHTML = "<b>" + user + "</b>: " + msg;
+      }
+      else {
+        item.innerHTML = msg;
+      }
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
     }
-    form.addEventListener('change', function(e) {
+    form.addEventListener('change', function (e) {
       if (nick.value && nick.value != user) {
-          socket.emit('name change', user, nick.value);
-          user = nick.value;
+        socket.emit('name change', user, nick.value);
+        user = nick.value;
       }
     });
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (input.value) {
-            addMessage(input.value, user);
-            socket.emit('chat message', {user: user, msg: input.value});
-            input.value = '';
-        } 
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (input.value) {
+        addMessage(input.value, user);
+        socket.emit('chat message', { user: user, msg: input.value });
+        input.value = '';
+      }
     });
 
     socket.on('join', function (name) {
-        user = name;
-        var item = document.createElement('li');
-        item.innerHTML = "\t<em><b>" + user + "</b> joined the room</em>";
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+      user = name;
+      var item = document.createElement('li');
+      item.innerHTML = "\t<em><b>" + user + "</b> joined the room</em>";
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
     });
     socket.on('online', function (online) {
-        users = Object.values(online);
-        repr = "Users online: <em>" + users.join(", ") + ".</em>";
-        addMessage(repr);
+      users = Object.values(online);
+      repr = "Users online: <em>" + users.join(", ") + ".</em>";
+      addMessage(repr);
     });
     socket.on('leave', function (name) {
-        user = name;
-        var item = document.createElement('li');
-        item.innerHTML = "<em><b> " + user + "</b> left the room</em>";
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+      user = name;
+      var item = document.createElement('li');
+      item.innerHTML = "<em><b> " + user + "</b> left the room</em>";
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
     });
     socket.on('name change', function (old_name, new_name) {
-        addMessage("<em>" + old_name + " changed name to " + new_name + ".</em>");
+      addMessage("<em>" + old_name + " changed name to " + new_name + ".</em>");
     });
     socket.on('chat message', function (p) {
-        const { user, msg } = p;
-        addMessage(msg, user);
+      const { user, msg } = p;
+      addMessage(msg, user);
     });
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>

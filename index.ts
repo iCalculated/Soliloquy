@@ -13,7 +13,7 @@ const data = chalk.blue;
 
 const online = {};
 app.get('/', (req, res) => {
-    res.sendFile('index.html', {root: "."})
+    res.sendFile('index.html', { root: "." })
 });
 
 
