@@ -82,8 +82,11 @@
     var input = document.getElementById('input');
     var user;
 
-    function addMessage(msg, user) {
+    function addMessage(msg, { style, user }={}) {
       var item = document.createElement('li');
+      if (style) {
+        item.setAttribute("style", style);
+      }
       if (user) {
         item.innerHTML = "<b>" + user + "</b>: " + msg;
       }
@@ -96,43 +99,39 @@
     form.addEventListener('change', function (e) {
       if (nick.value && nick.value != user) {
         socket.emit('name change', user, nick.value);
+        addMessage("<em>" + user + " (self) changed name to " + nick.value + ".</style></em>", {style: "color:grey"});
         user = nick.value;
       }
     });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (input.value) {
-        addMessage(input.value, user);
+        addMessage(input.value, {user});
         socket.emit('chat message', { user: user, msg: input.value });
         input.value = '';
       }
     });
 
-    socket.on('join', function (name) {
+    socket.on('set name', function (name) {
       user = name;
-      var item = document.createElement('li');
-      item.innerHTML = "\t<em><b>" + user + "</b> joined the room</em>";
-      messages.appendChild(item);
-      window.scrollTo(0, document.body.scrollHeight);
+    });
+    socket.on('join', function (name) {
+      addMessage("<em><b>" + user + "</b> joined the room</em>", {style: "color:grey"});
     });
     socket.on('online', function (online) {
       users = Object.values(online);
-      repr = "Users online: <em>" + users.join(", ") + ".</em>";
-      addMessage(repr);
+      repr = "<em>Users online: <b>" + users.join(", ") + ".</b></em>";
+      addMessage(repr, {style: "color:grey"});
     });
     socket.on('leave', function (name) {
-      user = name;
-      var item = document.createElement('li');
-      item.innerHTML = "<em><b> " + user + "</b> left the room</em>";
-      messages.appendChild(item);
-      window.scrollTo(0, document.body.scrollHeight);
+      addMessage("<em><b> " + name + "</b> left the room</em>", {style: "color:grey"})
     });
     socket.on('name change', function (old_name, new_name) {
-      addMessage("<em>" + old_name + " changed name to " + new_name + ".</em>");
+      addMessage("<em>" + old_name + " changed name to " + new_name + ".</style></em>", {style: "color:grey"});
     });
     socket.on('chat message', function (p) {
       const { user, msg } = p;
-      addMessage(msg, user);
+      addMessage(msg, {user});
     });
   </script>
 </body>

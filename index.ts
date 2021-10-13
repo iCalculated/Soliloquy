@@ -21,8 +21,9 @@ io.on('connection', (socket) => {
     const name = faker.hacker.adjective() + " " + faker.hacker.noun();
     console.log(data(name) + action(' connected'))
     online[socket.id] = name;
+    socket.emit('set name', name);
     io.emit('join', name);
-    io.emit('online', online)
+    io.emit('online', online);
     socket.on('disconnect', () => {
         const name = online[socket.id];
         console.log(data(name) + action(' disconnected'));
@@ -37,8 +38,8 @@ io.on('connection', (socket) => {
     });
     socket.on('name change', (old_name, new_name) => {
         online[socket.id] = new_name;
-        console.log(data(old_name) + action(' changed nick to') + data(new_name));
-        socket.emit('name change', old_name, new_name);
+        console.log(data(old_name) + action(' changed nick to ') + data(new_name));
+        socket.broadcast.emit('name change', old_name, new_name);
     })
 });
 
