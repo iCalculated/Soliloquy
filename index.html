@@ -82,8 +82,16 @@
     var input = document.getElementById('input');
     var user;
 
+    const server_style = "color:gray"
+
     function parseCommand(command, params) {
-      
+      console.log("c: " + command + ", p: " + params);
+      if (command == "help") {
+        addMessage("Did you really expect a help page!", {style: server_style});
+      }
+      else { 
+        addMessage("Try <em>/help</em> to see more commands", {style: server_style})
+      }
     }
     function addMessage(msg, { style, user }={}) {
       var item = document.createElement('li');
@@ -102,7 +110,7 @@
     form.addEventListener('change', function (e) {
       if (nick.value && nick.value != user) {
         socket.emit('name change', user, nick.value);
-        addMessage("<em>" + user + " (self) changed name to " + nick.value + ".</style></em>", {style: "color:grey"});
+        addMessage("<em>" + user + " (self) changed name to " + nick.value + ".", {style: server_style});
         user = nick.value;
       }
     });
@@ -110,9 +118,9 @@
       e.preventDefault();
       if (input.value) {
         const msg = input.value;
-        if (msg.startswith('/')) {
+        if (msg.startsWith('/')) {
           i = msg.indexOf(' ');
-          command = msg.substring(1,i);
+          command = i != -1 ? msg.substring(1,i) : msg.slice(1);
           params = i != -1 ? msg.slice(i+1) : "";
           parseCommand(command, params);
         }
@@ -128,18 +136,18 @@
       user = name;
     });
     socket.on('join', function (name) {
-      addMessage("<em><b>" + user + "</b> joined the room</em>", {style: "color:grey"});
+      addMessage("<em><b>" + user + "</b> joined the room</em>", {style: server_style});
     });
     socket.on('online', function (online) {
       users = Object.values(online);
       repr = "<em>Users online: <b>" + users.join(", ") + ".</b></em>";
-      addMessage(repr, {style: "color:grey"});
+      addMessage(repr, {style: server_style});
     });
     socket.on('leave', function (name) {
-      addMessage("<em><b> " + name + "</b> left the room</em>", {style: "color:grey"})
+      addMessage("<em><b> " + name + "</b> left the room</em>", {style: server_style})
     });
     socket.on('name change', function (old_name, new_name) {
-      addMessage("<em>" + old_name + " changed name to " + new_name + ".</style></em>", {style: "color:grey"});
+      addMessage("<em>" + old_name + " changed name to " + new_name + ".</style></em>", {style: server_style});
     });
     socket.on('chat message', function (p) {
       const { user, msg } = p;
