@@ -82,6 +82,9 @@
     var input = document.getElementById('input');
     var user;
 
+    function parseCommand(command, params) {
+      
+    }
     function addMessage(msg, { style, user }={}) {
       var item = document.createElement('li');
       if (style) {
@@ -106,8 +109,17 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (input.value) {
-        addMessage(input.value, {user});
-        socket.emit('chat message', { user: user, msg: input.value });
+        const msg = input.value;
+        if (msg.startswith('/')) {
+          i = msg.indexOf(' ');
+          command = msg.substring(1,i);
+          params = i != -1 ? msg.slice(i+1) : "";
+          parseCommand(command, params);
+        }
+        else { 
+          addMessage(input.value, { user });
+          socket.emit('chat message', { user, msg });
+        }
         input.value = '';
       }
     });
