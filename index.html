@@ -94,7 +94,6 @@
         target = i !=- 1 ? params.slice(0,i) : params;
         msg = i != -1 ? params.slice(i+1) : "";
         socket.emit('private message', target, msg);
-        addMessage(msg, {user: user + "&rarr;" + target});
       }
       else { 
         addMessage("Try <em>/help</em> to see more commands", {style: server_style})
@@ -160,6 +159,16 @@
       const { user, msg } = p;
       addMessage(msg, {user});
     });
+    socket.on('private message', function(from, msg) {
+        addMessage(msg, {user: from + "&rarr;" + user});
+    })
+    socket.on('private received', function(to, msg) {
+        addMessage(msg, {user: user + "&rarr;" + to});
+    })
+    socket.on('private failed', function(to, msg) {
+      addMessage("Failed to find user " + to, {style: server_style})
+
+    })
   </script>
 </body>
 
