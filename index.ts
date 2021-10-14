@@ -36,6 +36,17 @@ io.on('connection', (socket) => {
         online[socket.id] = user;
         console.log(action('received ') + data(msg) + action(" from ") + data(user));
     });
+    socket.on('private message', (target, msg) => {
+        const from = online[socket.id];
+        for (const u in online) {
+            if (online[u] == target) {
+                const id = u;
+                io.to(id).emit('private message', from, msg)
+                socket.emit('private received', target, msg)
+            }
+        }
+        socket.emit('private failed', target, msg)
+    });
     socket.on('name change', (old_name, new_name) => {
         online[socket.id] = new_name;
         console.log(data(old_name) + action(' changed nick to ') + data(new_name));

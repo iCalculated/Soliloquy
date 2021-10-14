@@ -87,7 +87,14 @@
     function parseCommand(command, params) {
       console.log("c: " + command + ", p: " + params);
       if (command == "help") {
-        addMessage("Did you really expect a help page!", {style: server_style});
+        addMessage("Fool! Did you really expect a help page?", {style: server_style});
+      }
+      if (["msg","m"].includes(command)) {
+        i = params.indexOf(" ");
+        target = i !=- 1 ? params.slice(0,i) : params;
+        msg = i != -1 ? params.slice(i+1) : "";
+        socket.emit('private message', target, msg);
+        addMessage(msg, {user: user + "&rarr;" + target});
       }
       else { 
         addMessage("Try <em>/help</em> to see more commands", {style: server_style})
