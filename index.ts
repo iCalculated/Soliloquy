@@ -43,9 +43,12 @@ io.on('connection', (socket) => {
                 const id = u;
                 io.to(id).emit('private message', from, msg)
                 socket.emit('private received', target, msg)
+                console.log(data(from) + action('->') + data(target) + action(": ") + data(msg));
+                return
             }
         }
         socket.emit('private failed', target, msg)
+        console.log(data(from) + action('->') + data(target) + action(" failed"));
     });
     socket.on('name change', (old_name, new_name) => {
         online[socket.id] = new_name;

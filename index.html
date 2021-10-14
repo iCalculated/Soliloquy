@@ -96,7 +96,7 @@
         socket.emit('private message', target, msg);
       }
       else { 
-        addMessage("Try <em>/help</em> to see more commands", {style: server_style})
+        addMessage(`Invalid command <em>${command}</em>. Try <em>/help</em> to see more commands`, {style: server_style})
       }
     }
     function addMessage(msg, { style, user }={}) {
