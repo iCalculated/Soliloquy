@@ -145,9 +145,7 @@
       addMessage("<em><b>" + user + "</b> joined the room</em>", {style: server_style});
     });
     socket.on('online', function (online) {
-      console.log(online);
-      users = Object.keys(online);
-      repr = "<em>Users online: <b>" + users.join(", ") + ".</b></em>";
+      repr = "<em>Users online: <b>" + online.join(", ") + ".</b></em>";
       addMessage(repr, {style: server_style});
     });
     socket.on('leave', function (name) {

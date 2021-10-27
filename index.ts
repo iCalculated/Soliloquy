@@ -23,13 +23,13 @@ io.on('connection', (socket: SocketIO.Socket) => {
     online.set(socket.id, name); 
     socket.emit('set name', name);
     io.emit('join', name);
-    io.emit('online', online.values());
+    io.emit('online', Array.from(online.values()));
     socket.on('disconnect', () => {
         const name = online.get(socket.id);
         console.log(data(name) + action(' disconnected'));
         io.emit('leave', name)
         online.delete(socket.id)
-        io.emit('online', online.values())
+        io.emit('online', Array.from(online.values()))
     });
     socket.on('chat message', ({ msg, user }) => {
         socket.broadcast.emit('chat message', { msg, user });
