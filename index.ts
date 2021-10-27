@@ -62,11 +62,9 @@ io.on('connection', (socket: SocketIO.Socket) => {
     });
     socket.on('typing update', ({user, status}) => {
         if (status) {
-            console.log('add');
             typing.add(user);
         }
         else {
-            console.log('del');
             typing.delete(user);
         }
         socket.broadcast.emit('typing', Array.from(typing));
