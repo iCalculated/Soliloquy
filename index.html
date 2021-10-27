@@ -161,12 +161,16 @@
 
 
     socket.on('typing', function (users) {
-      
+      others = users.filter(u => u != user);
+      if (others.length > 0) {
+        repr = "<em>Users typing: <b>" + others.join(", ") + ".</b></em>";
+        addMessage(repr, {style: server_style});
+      }
     });
     socket.on('set name', function (name) {
       user = name;
     });
-    socket.on('join', function (name) {
+    socket.on('join', function () {
       addMessage("<em><b>" + user + "</b> joined the room</em>", {style: server_style});
     });
     socket.on('online', function (online) {

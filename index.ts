@@ -57,13 +57,16 @@ io.on('connection', (socket: SocketIO.Socket) => {
         console.log(data(old_name) + action(' changed nick to ') + data(new_name));
         socket.broadcast.emit('name change', old_name, new_name);
     });
-    socket.on('typing update', (user, typing) => {
-        if (typing) {
+    socket.on('typing update', ({user, status}) => {
+        if (status) {
+            console.log('add');
             typing.add(user);
         }
         else {
+            console.log('del');
             typing.delete(user);
         }
+        console.log(typing);
         socket.broadcast.emit('typing', Array.from(typing));
     });
 });
