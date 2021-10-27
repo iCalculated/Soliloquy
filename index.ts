@@ -12,6 +12,8 @@ const action = chalk.bold.gray;
 const data = chalk.blue;
 
 const online = new Map<string, string>();
+const typing = new Set<string>();
+
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', { root: "." })
 });
@@ -54,7 +56,16 @@ io.on('connection', (socket: SocketIO.Socket) => {
         online.set(socket.id, new_name);
         console.log(data(old_name) + action(' changed nick to ') + data(new_name));
         socket.broadcast.emit('name change', old_name, new_name);
-    })
+    });
+    socket.on('typing update', (user, typing) => {
+        if (typing) {
+            typing.add(user);
+        }
+        else {
+            typing.delete(user);
+        }
+        socket.broadcast.emit('typing', Array.from(typing));
+    });
 });
 
 server.listen(3000, () => {
