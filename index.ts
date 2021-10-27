@@ -1,24 +1,25 @@
-const express = require('express');
+import express from "express";
+import SocketIO from "socket.io";
+
 const http = require('http')
-const { Server } = require("socket.io")
 const faker = require('faker');
 const chalk = require('chalk');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new SocketIO.Server(server);
 
 const action = chalk.bold.gray;
 const data = chalk.blue;
 
 const online = {};
-app.get('/', (req, res) => {
+app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', { root: "." })
 });
 
 
-io.on('connection', (socket) => {
-    const name = faker.hacker.adjective() + " " + faker.hacker.noun();
+io.on('connection', (socket: SocketIO.Socket) => {
+    const name: string = faker.hacker.adjective() + " " + faker.hacker.noun();
     console.log(data(name) + action(' connected'))
     online[socket.id] = name;
     socket.emit('set name', name);

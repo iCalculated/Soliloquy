@@ -116,7 +116,7 @@
     form.addEventListener('change', function (e) {
       if (nick.value && nick.value != user) {
         socket.emit('name change', user, nick.value);
-        addMessage("<em>" + user + " (self) changed name to " + nick.value + ".", {style: server_style});
+        addMessage("<em><b>" + user + "</b> (self) changed name to <b>" + nick.value + "</b>.", {style: server_style});
         user = nick.value;
       }
     });
