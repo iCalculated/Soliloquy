@@ -10,6 +10,19 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
+    #typing-bar {
+      background: rgba(0, 0, 0, 0.10);
+      padding: 0.25rem;
+      position: fixed;
+      bottom: 3rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      height: 2rem;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+
     #form {
       background: rgba(0, 0, 0, 0.15);
       padding: 0.25rem;
@@ -70,6 +83,9 @@
 
 <body>
   <ul id="messages"></ul>
+  <div id="typing-bar">
+    <p id="typing-status"> </p>
+  </div>
   <form id="form" action="">
     <input id="nick" autocomplete="off" placeholder=Username />
     <input id="input" autocomplete="off" autofocus /><button>Send</button>
@@ -78,6 +94,7 @@
   <script>
     var socket = io();
     var messages = document.getElementById('messages');
+    var typing_status = document.getElementById('typing-status');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
     var typing = false;
@@ -162,12 +179,14 @@
 
     socket.on('typing', function (users) {
       others = users.filter(u => u != user);
+      status = document.getElementById("typing-status");
+      console.log(status);
       if (others.length > 3 ) {
-        addMessage("Several users are typing...", {style: server_style});
+        typing_status.innerText = "Several users are typing...";
       }
       else if (others.length > 0) {
-        repr = "<em>Users typing: <b>" + others.join(", ") + ".</b></em>";
-        addMessage(repr, {style: server_style});
+        repr = "Users typing: " + others.join(", ") + ".";
+        typing_status.innerText = repr;
       }
     });
     socket.on('set name', function (name) {
