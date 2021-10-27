@@ -80,6 +80,8 @@
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    var typing = false;
+    var timeout = undefined;
     var user;
 
     const server_style = "color:gray"
@@ -141,9 +143,26 @@
       if (e.keyCode == 13) {
         return
       }
-      socket.emit('typing', { user });
+      if (!typing) {
+        typing = true
+        socket.emit('typing update', { user, status: true });
+        timeout = setTimeout(timeoutFunction, 5000);
+      } else {
+        clearTimeout(timeout);
+        timeout = setTimeout(timeoutFunction, 5000);
+      }
     });
 
+
+    function timeoutFunction(){
+      typing = false;
+      socket.emit('typing update', { user, status: false });
+    }
+
+
+    socket.on('typing', function (users) {
+      
+    });
     socket.on('set name', function (name) {
       user = name;
     });
