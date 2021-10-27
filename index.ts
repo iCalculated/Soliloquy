@@ -38,8 +38,8 @@ io.on('connection', (socket: SocketIO.Socket) => {
     });
     socket.on('private message', (target, msg) => {
         const from = online.get(socket.id);
-        for (const u in online) {
-            if (online.get(u) == target) {
+        for (const [id,u] of Array.from(online.entries())) {
+            if (u == target) {
                 const id = u;
                 io.to(id).emit('private message', from, msg)
                 socket.emit('private received', target, msg)

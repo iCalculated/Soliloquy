@@ -137,6 +137,12 @@
         input.value = '';
       }
     });
+    form.addEventListener('keydown', function (e) {
+      if (e.keyCode == 13) {
+        return
+      }
+      socket.emit('typing', { user });
+    });
 
     socket.on('set name', function (name) {
       user = name;
