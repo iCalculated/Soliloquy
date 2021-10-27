@@ -30,7 +30,10 @@ io.on('connection', (socket: SocketIO.Socket) => {
         const name = online.get(socket.id);
         console.log(data(name) + action(' disconnected'));
         io.emit('leave', name)
-        online.delete(socket.id)
+        online.delete(socket.id);
+        if (name) {
+            typing.delete(name);
+        }
         io.emit('online', Array.from(online.values()))
     });
     socket.on('chat message', ({ msg, user }) => {
@@ -66,7 +69,6 @@ io.on('connection', (socket: SocketIO.Socket) => {
             console.log('del');
             typing.delete(user);
         }
-        console.log(typing);
         socket.broadcast.emit('typing', Array.from(typing));
     });
 });
